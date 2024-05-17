@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         GeoFS GPWS callouts
-// @version      0.9.1
+// @version      1.0
 // @description  Adds some GPWS callouts
 // @author       GGamerGGuy
 // @match        https://www.geo-fs.com/geofs.php?v=*
@@ -26,12 +26,19 @@ setTimeout((function() {
     window.aRetard = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/retard.wav');
     window.a5 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/5.wav');
     window.stall = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/stall.wav');
-    window.glideslope = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/glideslope.wav');
+    window.glideSlope = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/glideslope.wav');
     window.tooLowFlaps = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/too-low_flaps.wav');
     window.tooLowGear = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/too-low_gear.wav');
     window.apDisconnect = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/ap-disconnect.wav');
     window.minimumBaro = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/minimum.wav');
     window.dontSink = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/dont-sink.wav');
+    window.masterA = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/masterAlarm.wav');
+    window.bankAngle = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bank-angle.wav');
+    window.overspeed = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/overspeed.wav');
+    window.justPaused = false;
+    window.masterA.loop = true;
+    window.bankAngle.loop = true;
+    window.overspeed.loop = true;
     window.iminimums = false;
     window.i2500 = false;
     window.i2000 = false;
@@ -75,23 +82,6 @@ setTimeout((function() {
         flightDataElement = document.createElement('div');
         flightDataElement.id = 'flightDataDisplay1';
         flightDataElement.classList = 'mdl-button';
-        /*flightDataElement.style.position = 'fixed';
-        flightDataElement.style.bottom = '0';
-        flightDataElement.style.left = '640px';
-        flightDataElement.style.height = '36px';
-        flightDataElement.style.minWidth = '64px';
-        flightDataElement.style.padding = '0 16px';
-        flightDataElement.style.display = 'inline-block';
-        flightDataElement.style.fontFamily = '"Roboto", "Helvetica", "Arial", sans-serif';
-        flightDataElement.style.fontSize = '14px';
-        flightDataElement.style.textTransform = 'uppercase';
-        flightDataElement.style.overflow = 'hidden';
-        flightDataElement.style.willChange = 'box-shadow';
-        flightDataElement.style.transition = 'box-shadow .2s cubic-bezier(.4,0,1,1), background-color .2s cubic-bezier(.4,0,.2,1), color .2s cubic-bezier(.4,0,.2,1)';
-        flightDataElement.style.textAlign = 'center';
-        flightDataElement.style.lineHeight = '36px';
-        flightDataElement.style.verticalAlign = 'middle';
-        flightDataElement.style.zIndex = '9999';*/
         bottomDiv.appendChild(flightDataElement);
     }
 
@@ -101,6 +91,9 @@ setTimeout((function() {
     function updateGPWS() {
         // Check if geofs.animation.values is available
         if (typeof geofs.animation.values != 'undefined' && !geofs.isPaused()) {
+            if (window.justPaused) {
+                window.justPaused = false;
+            }
             window.willTheDoorFallOff = geofs.aircraft.instance.aircraftRecord.name.includes("Boeing");
             if (window.willTheDoorFallOff && !window.didAWheelFall) {
                 window.a2500 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/b2500.wav');
@@ -116,15 +109,20 @@ setTimeout((function() {
                 window.a30 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/b30.wav');
                 window.a20 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/b20.wav');
                 window.a10 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/b10.wav');
-                //window.aRetard = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/retard.wav');
                 window.a5 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/b5.wav');
                 window.stall = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bstall.wav');
-                window.glideslope = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bglideslope.wav');
+                window.glideSlope = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bglideslope.wav');
                 window.tooLowFlaps = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/btoo-low_flaps.wav');
                 window.tooLowGear = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/btoo-low_gear.wav');
                 window.apDisconnect = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bap-disconnect.wav');
                 window.minimumBaro = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bminimums.wav');
                 window.dontSink = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bdont-sink.wav');
+                window.masterA = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bmasterAlarm.wav');
+                window.bankAngle = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bbank-angle.wav');
+                window.overspeed = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/boverspeed.wav');
+                window.masterA.loop = true;
+                window.bankAngle.loop = true;
+                window.overspeed.loop = true;
             } else if (!window.willTheDoorFallOff && window.didAWheelFall) {
                 window.a2500 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/2500.wav');
                 window.a2000 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/2000.wav');
@@ -139,35 +137,50 @@ setTimeout((function() {
                 window.a30 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/30.wav');
                 window.a20 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/20.wav');
                 window.a10 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/10.wav');
-                //window.aRetard = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/retard.wav');
                 window.a5 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/5.wav');
                 window.stall = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/stall.wav');
-                window.glideslope = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/glideslope.wav');
+                window.glideSlope = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/glideslope.wav');
                 window.tooLowFlaps = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/too-low_flaps.wav');
                 window.tooLowGear = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/too-low_gear.wav');
                 window.apDisconnect = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/ap-disconnect.wav');
                 window.minimumBaro = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/minimum.wav');
                 window.dontSink = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/dont-sink.wav');
+                window.masterA = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/masterAlarm.wav');
+                window.bankAngle = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bank-angle.wav');
+                window.overspeed = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/overspeed.wav');
+                window.masterA.loop = true;
+                window.bankAngle.loop = true;
+                window.overspeed.loop = true;
             }
             // Retrieve and format the required values
             var minimum = ((document.getElementById("minimums") !== null) && document.getElementById("minimums").value !== undefined) ? Number(document.getElementById("minimums").value) : undefined;
             var agl = (geofs.animation.values.altitude !== undefined && geofs.animation.values.groundElevationFeet !== undefined) ? Math.round((geofs.animation.values.altitude - geofs.animation.values.groundElevationFeet) + (geofs.aircraft.instance.collisionPoints[geofs.aircraft.instance.collisionPoints.length - 2].worldPosition[2]*3.2808399)) : 'N/A';
             var verticalSpeed = geofs.animation.values.verticalSpeed !== undefined ? Math.round(geofs.animation.values.verticalSpeed) : 'N/A';
             //Glideslope calculation
-            var glideSlope;
+            var glideslope;
             if (geofs.animation.getValue("NAV1Direction") && (geofs.animation.getValue("NAV1Distance") !== geofs.runways.getNearestRunway([geofs.nav.units.NAV1.navaid.lat,geofs.nav.units.NAV1.navaid.lon,0]).lengthMeters*0.185)) { //The second part to the if statement prevents the divide by 0 error.
-                glideslope = (geofs.animation.getValue("NAV1Direction") === "to") ? (Math.atan(((geofs.animation.values.altitude/3.2808399+(geofs.aircraft.instance.collisionPoints[geofs.aircraft.instance.collisionPoints.length - 2].worldPosition[2]+0.1))-geofs.nav.units.NAV1.navaid.elevation) / (geofs.animation.getValue("NAV1Distance")+geofs.runways.getNearestRunway([geofs.nav.units.NAV1.navaid.lat,geofs.nav.units.NAV1.navaid.lon,0]).lengthMeters*0.185))*RAD_TO_DEGREES).toFixed(1) : (Math.atan(((geofs.animation.values.altitude/3.2808399+(geofs.aircraft.instance.collisionPoints[geofs.aircraft.instance.collisionPoints.length - 2].worldPosition[2]+0.1))-geofs.nav.units.NAV1.navaid.elevation) / Math.abs(geofs.animation.getValue("NAV1Distance")-geofs.runways.getNearestRunway([geofs.nav.units.NAV1.navaid.lat,geofs.nav.units.NAV1.navaid.lon,0]).lengthMeters*0.185))*RAD_TO_DEGREES).toFixed(1);
+                glideslope = (geofs.animation.getValue("NAV1Direction") === "to") ? Number((Math.atan(((geofs.animation.values.altitude/3.2808399+(geofs.aircraft.instance.collisionPoints[geofs.aircraft.instance.collisionPoints.length - 2].worldPosition[2]+0.1))-geofs.nav.units.NAV1.navaid.elevation) / (geofs.animation.getValue("NAV1Distance")+geofs.runways.getNearestRunway([geofs.nav.units.NAV1.navaid.lat,geofs.nav.units.NAV1.navaid.lon,0]).lengthMeters*0.185))*RAD_TO_DEGREES).toFixed(1)) : Number((Math.atan(((geofs.animation.values.altitude/3.2808399+(geofs.aircraft.instance.collisionPoints[geofs.aircraft.instance.collisionPoints.length - 2].worldPosition[2]+0.1))-geofs.nav.units.NAV1.navaid.elevation) / Math.abs(geofs.animation.getValue("NAV1Distance")-geofs.runways.getNearestRunway([geofs.nav.units.NAV1.navaid.lat,geofs.nav.units.NAV1.navaid.lon,0]).lengthMeters*0.185))*RAD_TO_DEGREES).toFixed(1));
             } else {
-                glideSlope = undefined;
+                glideslope = undefined;
             } //End Glideslope calculation
             if (audio.on) {
+                if (((geofs.aircraft.instance.stalling && !geofs.aircraft.instance.groundContact) || (geofs.nav.units.NAV1.navaid !== null && (agl > 100 && (glideslope < (geofs.nav.units.NAV1.navaid.slope - 1.5) || (glideslope > geofs.nav.units.NAV1.navaid.slope + 2)))) || (!geofs.aircraft.instance.groundContact && agl < 300 && (geofs.aircraft.instance.definition.gearTravelTime !== undefined) && (geofs.animation.values.gearPosition >= 0.5)) || (!geofs.aircraft.instance.groundContact && agl < 500 && (geofs.animation.values.flapsSteps !== undefined) && (geofs.animation.values.flapsPosition == 0) && window.tooLowGear.paused) || (!geofs.aircraft.instance.groundContact && agl < 300 && geofs.animation.values.throttle > 0.95 && verticalSpeed <= 0) || (Math.abs(geofs.aircraft.instance.animationValue.aroll) > 45)) && window.masterA.paused) {
+                    window.masterA.play();
+                } else if (!((geofs.aircraft.instance.stalling && !geofs.aircraft.instance.groundContact) || (geofs.nav.units.NAV1.navaid !== null && (agl > 100 && (glideslope < (geofs.nav.units.NAV1.navaid.slope - 1.5) || (glideslope > geofs.nav.units.NAV1.navaid.slope + 2)))) || (!geofs.aircraft.instance.groundContact && agl < 300 && (geofs.aircraft.instance.definition.gearTravelTime !== undefined) && (geofs.animation.values.gearPosition >= 0.5)) || (!geofs.aircraft.instance.groundContact && agl < 500 && (geofs.animation.values.flapsSteps !== undefined) && (geofs.animation.values.flapsPosition == 0) && window.tooLowGear.paused) || (!geofs.aircraft.instance.groundContact && agl < 300 && geofs.animation.values.throttle > 0.95 && verticalSpeed <= 0) || (Math.abs(geofs.aircraft.instance.animationValue.aroll) > 45)) && !window.masterA.paused) {
+                    window.masterA.pause();
+                }
+                if (Math.abs(geofs.aircraft.instance.animationValue.aroll) > 45 && window.bankAngle.paused) {
+                    window.bankAngle.play();
+                } else if (!(Math.abs(geofs.aircraft.instance.animationValue.aroll) > 45) && !window.bankAngle.paused) {
+                    window.bankAngle.pause();
+                }
                 if (geofs.aircraft.instance.stalling && !geofs.aircraft.instance.groundContact && window.stall.paused) { //Stall
                     window.stall.play();
                 } else if (!window.stall.paused && !geofs.aircraft.instance.stalling) {
                     window.stall.pause();
                 }
-                if (geofs.nav.units.NAV1.navaid !== null && (agl > 100 && (glideSlope < (geofs.nav.units.NAV1.navaid.slope - 1.5) || (glideSlope > geofs.nav.units.NAV1.navaid.slope + 2)) && window.glideslope.paused)) { //Glideslope
-                    window.glideslope.play();
+                if (geofs.nav.units.NAV1.navaid !== null && (agl > 100 && (glideslope < (geofs.nav.units.NAV1.navaid.slope - 1.5) || (glideslope > geofs.nav.units.NAV1.navaid.slope + 2)) && window.glideSlope.paused)) { //Glideslope
+                    window.glideSlope.play();
                 }
                 if (!geofs.aircraft.instance.groundContact && agl < 300 && (geofs.aircraft.instance.definition.gearTravelTime !== undefined) && (geofs.animation.values.gearPosition >= 0.5) && window.tooLowGear.paused) { //Too Low - Gear (This warning takes priority over the Too Low - Flaps warning)
                     window.tooLowGear.play();
@@ -299,6 +312,33 @@ setTimeout((function() {
                     window.gpwsRefreshRate = 100;
                 }
             }
+        } else if (geofs.isPaused() && !window.justPaused) {
+            window.a2500.pause();
+            window.a2000.pause();
+            window.a1000.pause();
+            window.a500.pause();
+            window.a400.pause();
+            window.a300.pause();
+            window.a200.pause();
+            window.a100.pause();
+            window.a50.pause();
+            window.a40.pause();
+            window.a30.pause();
+            window.a20.pause();
+            window.a10.pause();
+            window.aRetard.pause();
+            window.a5.pause();
+            window.stall.pause();
+            window.glideSlope.pause();
+            window.tooLowFlaps.pause();
+            window.tooLowGear.pause();
+            window.apDisconnect.pause();
+            window.minimumBaro.pause();
+            window.dontSink.pause();
+            window.masterA.pause();
+            window.bankAngle.pause();
+            window.overspeed.pause();
+            window.justPaused = true;
         }
         window.wasAPOn = geofs.autopilot.on;
         window.didAWheelFall = window.willTheDoorFallOff;
