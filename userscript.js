@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         GeoFS GPWS callouts
-// @version      0.9
+// @version      0.9.1
 // @description  Adds some GPWS callouts
 // @author       GGamerGGuy
 // @match        https://www.geo-fs.com/geofs.php?v=*
@@ -166,7 +166,7 @@ setTimeout((function() {
                 } else if (!window.stall.paused && !geofs.aircraft.instance.stalling) {
                     window.stall.pause();
                 }
-                if (agl > 100 && (glideSlope < (geofs.nav.units.NAV1.navaid.slope - 1.5) || (glideSlope > geofs.nav.units.NAV1.navaid.slope + 2)) && window.glideslope.paused) { //Glideslope
+                if (geofs.nav.units.NAV1.navaid !== null && (agl > 100 && (glideSlope < (geofs.nav.units.NAV1.navaid.slope - 1.5) || (glideSlope > geofs.nav.units.NAV1.navaid.slope + 2)) && window.glideslope.paused)) { //Glideslope
                     window.glideslope.play();
                 }
                 if (!geofs.aircraft.instance.groundContact && agl < 300 && (geofs.aircraft.instance.definition.gearTravelTime !== undefined) && (geofs.animation.values.gearPosition >= 0.5) && window.tooLowGear.paused) { //Too Low - Gear (This warning takes priority over the Too Low - Flaps warning)
