@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         GeoFS GPWS callouts
-// @version      1.0
+// @version      1.1
 // @description  Adds some GPWS callouts
 // @author       GGamerGGuy
 // @match        https://www.geo-fs.com/geofs.php?v=*
@@ -10,6 +10,8 @@
 // ==/UserScript==
 setTimeout((function() {
     'use strict';
+    window.soundsToggleKey = "w"; //CHANGE THIS LETTER TO CHANGE THE KEYBOARD SHORTCUT TO TOGGLE THE SOUNDS.
+    window.soundsOn = true; //This decides whether callouts are on by default or off by default.
     window.a2500 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/2500.wav');
     window.a2000 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/2000.wav');
     window.a1000 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/1000.wav');
@@ -163,7 +165,7 @@ setTimeout((function() {
             } else {
                 glideslope = undefined;
             } //End Glideslope calculation
-            if (audio.on) {
+            if (audio.on && window.soundsOn) {
                 if (((geofs.aircraft.instance.stalling && !geofs.aircraft.instance.groundContact) || (geofs.nav.units.NAV1.navaid !== null && (agl > 100 && (glideslope < (geofs.nav.units.NAV1.navaid.slope - 1.5) || (glideslope > geofs.nav.units.NAV1.navaid.slope + 2)))) || (!geofs.aircraft.instance.groundContact && agl < 300 && (geofs.aircraft.instance.definition.gearTravelTime !== undefined) && (geofs.animation.values.gearPosition >= 0.5)) || (!geofs.aircraft.instance.groundContact && agl < 500 && (geofs.animation.values.flapsSteps !== undefined) && (geofs.animation.values.flapsPosition == 0) && window.tooLowGear.paused) || (!geofs.aircraft.instance.groundContact && agl < 300 && geofs.animation.values.throttle > 0.95 && verticalSpeed <= 0) || (Math.abs(geofs.aircraft.instance.animationValue.aroll) > 45)) && window.masterA.paused) {
                     window.masterA.play();
                 } else if (!((geofs.aircraft.instance.stalling && !geofs.aircraft.instance.groundContact) || (geofs.nav.units.NAV1.navaid !== null && (agl > 100 && (glideslope < (geofs.nav.units.NAV1.navaid.slope - 1.5) || (glideslope > geofs.nav.units.NAV1.navaid.slope + 2)))) || (!geofs.aircraft.instance.groundContact && agl < 300 && (geofs.aircraft.instance.definition.gearTravelTime !== undefined) && (geofs.animation.values.gearPosition >= 0.5)) || (!geofs.aircraft.instance.groundContact && agl < 500 && (geofs.animation.values.flapsSteps !== undefined) && (geofs.animation.values.flapsPosition == 0) && window.tooLowGear.paused) || (!geofs.aircraft.instance.groundContact && agl < 300 && geofs.animation.values.throttle > 0.95 && verticalSpeed <= 0) || (Math.abs(geofs.aircraft.instance.animationValue.aroll) > 45)) && !window.masterA.paused) {
@@ -346,4 +348,9 @@ setTimeout((function() {
 
     // Update flight data display every 100ms
     setInterval(updateGPWS, window.gpwsRefreshRate);
+    document.addEventListener('keydown', function(event) {
+                if (event.key === window.soundsToggleKey) {
+                    window.soundsOn = !window.soundsOn;
+                }
+        });
 }), 8000);
