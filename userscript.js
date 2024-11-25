@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         GeoFS GPWS callouts
-// @version      1.1
+// @version      1.2
 // @description  Adds some GPWS callouts
 // @author       GGamerGGuy
 // @match        https://www.geo-fs.com/geofs.php?v=*
@@ -97,7 +97,36 @@ setTimeout((function() {
                 window.justPaused = false;
             }
             window.willTheDoorFallOff = geofs.aircraft.instance.aircraftRecord.name.includes("Boeing");
-            if (window.willTheDoorFallOff && !window.didAWheelFall) {
+            window.isAsOldAsYourMom = geofs.aircraft.instance.aircraftRecord.name.includes("757") || geofs.aircraft.instance.aircraftRecord.name.includes("767");
+            if (window.isAsOldAsYourMom && !window.wasAsOldAsYourMom) {
+                window.a2500 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/b2500.wav');
+                window.a2000 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/b2000.wav');
+                window.a1000 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/o1000.wav');
+                window.a500 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/o500.wav');
+                window.a400 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/o400.wav');
+                window.a300 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/o300.wav');
+                window.a200 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/o200.wav');
+                window.a100 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/o100.wav');
+                window.a50 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/o50.wav');
+                window.a40 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/o40.wav');
+                window.a30 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/o30.wav');
+                window.a20 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/o20.wav');
+                window.a10 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/o10.wav');
+                window.a5 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/b5.wav');
+                window.stall = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bstall.wav');
+                window.glideSlope = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/oglideslope.wav');
+                window.tooLowFlaps = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/otoo-low_flaps.wav');
+                window.tooLowGear = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/otoo-low_gear.wav');
+                window.apDisconnect = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bap-disconnect.wav');
+                window.minimumBaro = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/ominimums.wav');
+                window.dontSink = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/odont-sink.wav');
+                window.masterA = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bmasterAlarm.wav');
+                window.bankAngle = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/obank-angle.wav');
+                window.overspeed = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/boverspeed.wav');
+                window.masterA.loop = true;
+                window.bankAngle.loop = true;
+                window.overspeed.loop = true;
+            } else if (window.willTheDoorFallOff && !window.didAWheelFall && !window.isAsOldAsYourMom) {
                 window.a2500 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/b2500.wav');
                 window.a2000 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/b2000.wav');
                 window.a1000 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/b1000.wav');
@@ -344,13 +373,14 @@ setTimeout((function() {
         }
         window.wasAPOn = geofs.autopilot.on;
         window.didAWheelFall = window.willTheDoorFallOff;
+        window.wasAsOldAsYourMom = geofs.aircraft.instance.aircraftRecord.name.includes("757") || geofs.aircraft.instance.aircraftRecord.name.includes("767");
     }
 
     // Update flight data display every 100ms
     setInterval(updateGPWS, window.gpwsRefreshRate);
     document.addEventListener('keydown', function(event) {
-                if (event.key === window.soundsToggleKey) {
-                    window.soundsOn = !window.soundsOn;
-                }
-        });
+        if (event.key === window.soundsToggleKey) {
+            window.soundsOn = !window.soundsOn;
+        }
+    });
 }), 8000);
