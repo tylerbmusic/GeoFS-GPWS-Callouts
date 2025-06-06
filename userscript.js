@@ -1,16 +1,19 @@
 // ==UserScript==
 // @name         GeoFS GPWS callouts
-// @version      1.2
+// @namespace    https://github.com/tylerbmusic/GeoFS-GPWS-Callouts
+// @version      1.2.1
 // @description  Adds some GPWS callouts
 // @author       GGamerGGuy
 // @match        https://www.geo-fs.com/geofs.php?v=*
 // @match        https://*.geo-fs.com/geofs.php*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=geo-fs.com
 // @grant        none
+// @downloadURL  https://github.com/tylerbmusic/GeoFS-GPWS-Callouts/raw/refs/heads/main/userscript.js
+// @updateURL    https://github.com/tylerbmusic/GeoFS-GPWS-Callouts/raw/refs/heads/main/userscript.js
 // ==/UserScript==
 setTimeout((function() {
     'use strict';
-    window.soundsToggleKey = "w"; //CHANGE THIS LETTER TO CHANGE THE KEYBOARD SHORTCUT TO TOGGLE THE SOUNDS.
+    window.soundsToggleKey = "none"; //CHANGE THIS LETTER TO CHANGE THE KEYBOARD SHORTCUT TO TOGGLE THE SOUNDS.
     window.soundsOn = true; //This decides whether callouts are on by default or off by default.
     window.a2500 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/2500.wav');
     window.a2000 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/2000.wav');
@@ -60,6 +63,9 @@ setTimeout((function() {
     window.gpwsRefreshRate = 100;
     window.willTheDoorFallOff = false;
     window.didAWheelFall = false;
+    window.DEGREES_TO_RAD = window.DEGREES_TO_RAD || 0.017453292519943295769236907684886127134428718885417254560971914401710091146034494436822415696345094822123044925073790592483854692275281012398474218934047117319168245015010769561697553581238605305168789;
+    window.RAD_TO_DEGREES = window.RAD_TO_DEGREES || 57.295779513082320876798154814105170332405472466564321549160243861202847148321552632440968995851110944186223381632864893281448264601248315036068267863411942122526388097467267926307988702893110767938261;
+    window.METERS_TO_FEET = window.METERS_TO_FEET || 3.280839895;
     function isInRange(i, a, vs) {
         if (i >= 100) {
             if ((i <= a+10) && (i >= a-10)) {
