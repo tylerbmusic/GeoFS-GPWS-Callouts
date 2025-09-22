@@ -384,7 +384,6 @@ setTimeout((function() {
             window.masterA.pause();
             window.bankAngle.pause();
             window.overspeed.pause();
-            window.retractFlaps.pause();
             window.justPaused = true;
         }
         window.wasAPOn = geofs.autopilot.on;
