@@ -39,8 +39,7 @@ setTimeout((function() {
     window.dontSink = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/dont-sink.wav');
     window.masterA = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/masterAlarm.wav');
     window.bankAngle = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bank-angle.wav');
-    window.overspeed = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/overspeed.wav');
-    window.retractFlaps = new Audio('https://raw.githubusercontent.com/Memester2112/Sounds/main/flaps_overspeed_warning.wav');
+    window.overspeed = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/boverspeed.wav');
     window.justPaused = false;
     window.masterA.loop = true;
     window.bankAngle.loop = true;
@@ -67,7 +66,6 @@ setTimeout((function() {
     window.DEGREES_TO_RAD = window.DEGREES_TO_RAD || 0.017453292519943295769236907684886127134428718885417254560971914401710091146034494436822415696345094822123044925073790592483854692275281012398474218934047117319168245015010769561697553581238605305168789;
     window.RAD_TO_DEGREES = window.RAD_TO_DEGREES || 57.295779513082320876798154814105170332405472466564321549160243861202847148321552632440968995851110944186223381632864893281448264601248315036068267863411942122526388097467267926307988702893110767938261;
     window.METERS_TO_FEET = window.METERS_TO_FEET || 3.280839895;
-    window.METER_PER_SECOND_TO_KNOTS = window.METER_PER_SECOND_TO_KNOTS || 1.94384;
     function isInRange(i, a, vs) {
         if (i >= 100) {
             if ((i <= a+10) && (i >= a-10)) {
@@ -186,7 +184,7 @@ setTimeout((function() {
                 window.dontSink = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/dont-sink.wav');
                 window.masterA = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/masterAlarm.wav');
                 window.bankAngle = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bank-angle.wav');
-                window.overspeed = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/overspeed.wav');
+                window.overspeed = window.masterA;
                 window.masterA.loop = true;
                 window.bankAngle.loop = true;
                 window.overspeed.loop = true;
@@ -196,7 +194,7 @@ setTimeout((function() {
             var agl = (geofs.animation.values.altitude !== undefined && geofs.animation.values.groundElevationFeet !== undefined) ? Math.round((geofs.animation.values.altitude - geofs.animation.values.groundElevationFeet) + (geofs.aircraft.instance.collisionPoints[geofs.aircraft.instance.collisionPoints.length - 2].worldPosition[2]*3.2808399)) : 'N/A';
             var verticalSpeed = geofs.animation.values.verticalSpeed !== undefined ? Math.round(geofs.animation.values.verticalSpeed) : 'N/A';
             // Airspeed Calculation
-            var airSpeed = geofs.aircraft.instance.trueAirSpeed * window.METER_PER_SECOND_TO_KNOTS;
+            var airSpeed = geofs.animation.values.kias;
             var flapRatio = geofs.aircraft.instance.animationValue.flapsPositionRatio;
             var isFlapOverspeed = (airSpeed, flapRatio) => flapRatio > 0 && airSpeed > (230.5 - 62 * flapRatio); // rough estimates for both B737 & A350
             //Glideslope calculation
@@ -208,9 +206,9 @@ setTimeout((function() {
             } //End Glideslope calculation
             if (audio.on && window.soundsOn) {
                 if (agl > 1000 && isFlapOverspeed(airSpeed, flapRatio)){
-                    window.retractFlaps.play();
+                    window.overspeed.play();
                 } else {
-                    window.retractFlaps.pause();
+                    window.overspeed.pause();
                 }
                 if (((geofs.aircraft.instance.stalling && !geofs.aircraft.instance.groundContact) || (geofs.nav.units.NAV1.navaid !== null && (agl > 100 && (glideslope < (geofs.nav.units.NAV1.navaid.slope - 1.5) || (glideslope > geofs.nav.units.NAV1.navaid.slope + 2)))) || (!geofs.aircraft.instance.groundContact && agl < 300 && (geofs.aircraft.instance.definition.gearTravelTime !== undefined) && (geofs.animation.values.gearPosition >= 0.5)) || (!geofs.aircraft.instance.groundContact && agl < 500 && (geofs.animation.values.flapsSteps !== undefined) && (geofs.animation.values.flapsPosition == 0) && window.tooLowGear.paused) || (!geofs.aircraft.instance.groundContact && agl < 300 && geofs.animation.values.throttle > 0.95 && verticalSpeed <= 0) || (Math.abs(geofs.aircraft.instance.animationValue.aroll) > 45)) && window.masterA.paused) {
                     window.masterA.play();
