@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GeoFS GPWS callouts
 // @namespace    https://github.com/tylerbmusic/GeoFS-GPWS-Callouts
-// @version      1.2.1
+// @version      1.3
 // @description  Adds some GPWS callouts
 // @author       GGamerGGuy
 // @match        https://www.geo-fs.com/geofs.php?v=*
@@ -39,7 +39,7 @@ setTimeout((function() {
     window.dontSink = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/dont-sink.wav');
     window.masterA = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/masterAlarm.wav');
     window.bankAngle = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bank-angle.wav');
-    window.overspeed = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/overspeed.wav');
+    window.overspeed = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/masterAlarm.wav');
     window.justPaused = false;
     window.masterA.loop = true;
     window.bankAngle.loop = true;
@@ -66,6 +66,44 @@ setTimeout((function() {
     window.DEGREES_TO_RAD = window.DEGREES_TO_RAD || 0.017453292519943295769236907684886127134428718885417254560971914401710091146034494436822415696345094822123044925073790592483854692275281012398474218934047117319168245015010769561697553581238605305168789;
     window.RAD_TO_DEGREES = window.RAD_TO_DEGREES || 57.295779513082320876798154814105170332405472466564321549160243861202847148321552632440968995851110944186223381632864893281448264601248315036068267863411942122526388097467267926307988702893110767938261;
     window.METERS_TO_FEET = window.METERS_TO_FEET || 3.280839895;
+    //ANONYMOUS TRACKING VIA CLOUDFLARE (I will never sell your data.)
+    //What's being tracked: For each script, how many hits (page loads) it's had in the last 24 hours, how many total hits in the last 30 days, and how many unique users there are.
+    //Why it's being tracked: I am curious to know how many people are using my addons.
+    //To see the data, go to https://track.tylerbialowas-bard.workers.dev in a web browser.
+
+    async function track() {
+        if (true) { //To opt out of anonymous tracking, change the word "true" in this line to "false".
+            const SCRIPT_NAME = "GPWS_Callouts";
+
+            // Generate persistent ID
+            let userId = localStorage.getItem("myScriptUserId");
+
+            if (!userId) {
+                userId = crypto.randomUUID();
+                localStorage.setItem("myScriptUserId", userId);
+            }
+            try {
+                const response = await fetch("https://track.tylerbialowas-bard.workers.dev", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        script: SCRIPT_NAME,
+                        userId: userId
+                    }),
+                });
+
+                if (response.ok) {
+                    console.log("Analytics event sent successfully");
+                }
+            } catch (error) {
+                console.error("Failed to track event:", error);
+            }
+        }
+    }
+    track();
+
     function isInRange(i, a, vs) {
         if (i >= 100) {
             if ((i <= a+10) && (i >= a-10)) {
@@ -184,7 +222,7 @@ setTimeout((function() {
                 window.dontSink = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/dont-sink.wav');
                 window.masterA = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/masterAlarm.wav');
                 window.bankAngle = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bank-angle.wav');
-                window.overspeed = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/overspeed.wav');
+                window.overspeed = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/masterAlarm.wav');
                 window.masterA.loop = true;
                 window.bankAngle.loop = true;
                 window.overspeed.loop = true;
@@ -193,6 +231,10 @@ setTimeout((function() {
             var minimum = ((document.getElementById("minimums") !== null) && document.getElementById("minimums").value !== undefined) ? Number(document.getElementById("minimums").value) : undefined;
             var agl = (geofs.animation.values.altitude !== undefined && geofs.animation.values.groundElevationFeet !== undefined) ? Math.round((geofs.animation.values.altitude - geofs.animation.values.groundElevationFeet) + (geofs.aircraft.instance.collisionPoints[geofs.aircraft.instance.collisionPoints.length - 2].worldPosition[2]*3.2808399)) : 'N/A';
             var verticalSpeed = geofs.animation.values.verticalSpeed !== undefined ? Math.round(geofs.animation.values.verticalSpeed) : 'N/A';
+            // Airspeed Calculation
+            var airSpeed = geofs.animation.values.kias;
+            var flapRatio = geofs.aircraft.instance.animationValue.flapsPositionRatio;
+            var isFlapOverspeed = (geofs.aircraft.instance.id == '4' || geofs.aircraft.instance.id == '24') && flapRatio > 0 && airSpeed > (230.5 - 62 * flapRatio); // rough estimates for both B737 & A350
             //Glideslope calculation
             var glideslope;
             if (geofs.animation.getValue("NAV1Direction") && (geofs.animation.getValue("NAV1Distance") !== geofs.runways.getNearestRunway([geofs.nav.units.NAV1.navaid.lat,geofs.nav.units.NAV1.navaid.lon,0]).lengthMeters*0.185)) { //The second part to the if statement prevents the divide by 0 error.
@@ -201,6 +243,11 @@ setTimeout((function() {
                 glideslope = undefined;
             } //End Glideslope calculation
             if (audio.on && window.soundsOn) {
+                if (agl > 1000 && isFlapOverspeed && window.overspeed.paused) {
+                    window.overspeed.play();
+                } else if (!(agl > 1000 && isFlapOverspeed) && !window.overspeed.paused) {
+                    window.overspeed.pause();
+                }
                 if (((geofs.aircraft.instance.stalling && !geofs.aircraft.instance.groundContact) || (geofs.nav.units.NAV1.navaid !== null && (agl > 100 && (glideslope < (geofs.nav.units.NAV1.navaid.slope - 1.5) || (glideslope > geofs.nav.units.NAV1.navaid.slope + 2)))) || (!geofs.aircraft.instance.groundContact && agl < 300 && (geofs.aircraft.instance.definition.gearTravelTime !== undefined) && (geofs.animation.values.gearPosition >= 0.5)) || (!geofs.aircraft.instance.groundContact && agl < 500 && (geofs.animation.values.flapsSteps !== undefined) && (geofs.animation.values.flapsPosition == 0) && window.tooLowGear.paused) || (!geofs.aircraft.instance.groundContact && agl < 300 && geofs.animation.values.throttle > 0.95 && verticalSpeed <= 0) || (Math.abs(geofs.aircraft.instance.animationValue.aroll) > 45)) && window.masterA.paused) {
                     window.masterA.play();
                 } else if (!((geofs.aircraft.instance.stalling && !geofs.aircraft.instance.groundContact) || (geofs.nav.units.NAV1.navaid !== null && (agl > 100 && (glideslope < (geofs.nav.units.NAV1.navaid.slope - 1.5) || (glideslope > geofs.nav.units.NAV1.navaid.slope + 2)))) || (!geofs.aircraft.instance.groundContact && agl < 300 && (geofs.aircraft.instance.definition.gearTravelTime !== undefined) && (geofs.animation.values.gearPosition >= 0.5)) || (!geofs.aircraft.instance.groundContact && agl < 500 && (geofs.animation.values.flapsSteps !== undefined) && (geofs.animation.values.flapsPosition == 0) && window.tooLowGear.paused) || (!geofs.aircraft.instance.groundContact && agl < 300 && geofs.animation.values.throttle > 0.95 && verticalSpeed <= 0) || (Math.abs(geofs.aircraft.instance.animationValue.aroll) > 45)) && !window.masterA.paused) {
