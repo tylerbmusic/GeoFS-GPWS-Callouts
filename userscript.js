@@ -3,7 +3,7 @@
 // @namespace    https://github.com/tylerbmusic/GeoFS-GPWS-Callouts
 // @version      1.3
 // @description  Adds some GPWS callouts
-// @author       GGamerGGuy
+// @author       GGamerGGuy, edited by Bruh000-sad (GEOFS-GUY)
 // @match        https://www.geo-fs.com/geofs.php?v=*
 // @match        https://*.geo-fs.com/geofs.php*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=geo-fs.com
@@ -36,7 +36,7 @@ setTimeout((function() {
     window.tooLowGear = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/too-low_gear.wav');
     window.apDisconnect = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/ap-disconnect.wav');
     window.minimumBaro = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/minimum.wav');
-    window.dontSink = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/dont-sink.wav');
+    window.dontSink = new Audio('https://bruh0000-sad.github.io/Just-some-stall-sound/fullsizerender_LgnRpKo.mp3');
     window.masterA = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/masterAlarm.wav');
     window.bankAngle = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bank-angle.wav');
     window.overspeed = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/masterAlarm.wav');
@@ -157,16 +157,16 @@ setTimeout((function() {
                 window.a20 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/o20.wav');
                 window.a10 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/o10.wav');
                 window.a5 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/b5.wav');
-                window.stall = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bstall.wav');
+                window.stall = new Audio('https://bruh0000-sad.github.io/Just-some-stall-sound/boeing-stick-shaker.mp3');
                 window.glideSlope = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/oglideslope.wav');
                 window.tooLowFlaps = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/otoo-low_flaps.wav');
                 window.tooLowGear = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/otoo-low_gear.wav');
-                window.apDisconnect = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bap-disconnect.wav');
+                window.apDisconnect = new Audio('https://bruh0000-sad.github.io/Just-some-stall-sound/ap-disconnect-boeing.mp3');
                 window.minimumBaro = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/ominimums.wav');
-                window.dontSink = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/odont-sink.wav');
+                window.dontSink = new Audio('https://bruh0000-sad.github.io/Just-some-stall-sound/boeing-747-pull-up-400-f.mp3');
                 window.masterA = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bmasterAlarm.wav');
                 window.bankAngle = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/obank-angle.wav');
-                window.overspeed = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/boverspeed.wav');
+                window.overspeed = new Audio('https://bruh0000-sad.github.io/Just-some-stall-sound/e65b09ba-01fd-4da6-bacd-564c9c7c59ae.mp3');
                 window.masterA.loop = true;
                 window.bankAngle.loop = true;
                 window.overspeed.loop = true;
@@ -185,16 +185,16 @@ setTimeout((function() {
                 window.a20 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/b20.wav');
                 window.a10 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/b10.wav');
                 window.a5 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/b5.wav');
-                window.stall = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bstall.wav');
+                window.stall = new Audio('https://bruh0000-sad.github.io/Just-some-stall-sound/boeing-stick-shaker.mp3');
                 window.glideSlope = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bglideslope.wav');
                 window.tooLowFlaps = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/btoo-low_flaps.wav');
                 window.tooLowGear = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/btoo-low_gear.wav');
-                window.apDisconnect = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bap-disconnect.wav');
+                window.apDisconnect = new Audio('https://bruh0000-sad.github.io/Just-some-stall-sound/ap-disconnect-boeing.mp3');
                 window.minimumBaro = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bminimums.wav');
-                window.dontSink = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bdont-sink.wav');
+                window.dontSink = new Audio('https://bruh0000-sad.github.io/Just-some-stall-sound/Pull%20Up%20Boeing.mp3');
                 window.masterA = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bmasterAlarm.wav');
                 window.bankAngle = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bbank-angle.wav');
-                window.overspeed = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/boverspeed.wav');
+                window.overspeed = new Audio('https://bruh0000-sad.github.io/Just-some-stall-sound/e65b09ba-01fd-4da6-bacd-564c9c7c59ae.mp3');
                 window.masterA.loop = true;
                 window.bankAngle.loop = true;
                 window.overspeed.loop = true;
@@ -219,10 +219,10 @@ setTimeout((function() {
                 window.tooLowGear = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/too-low_gear.wav');
                 window.apDisconnect = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/ap-disconnect.wav');
                 window.minimumBaro = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/minimum.wav');
-                window.dontSink = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/dont-sink.wav');
+                window.dontSink = new Audio('https://bruh0000-sad.github.io/Just-some-stall-sound/fullsizerender_LgnRpKo.mp3');
                 window.masterA = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/masterAlarm.wav');
                 window.bankAngle = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bank-angle.wav');
-                window.overspeed = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/masterAlarm.wav');
+                window.overspeed = new Audio('https://bruh0000-sad.github.io/Just-some-stall-sound/e65b09ba-01fd-4da6-bacd-564c9c7c59ae.mp3');
                 window.masterA.loop = true;
                 window.bankAngle.loop = true;
                 window.overspeed.loop = true;
