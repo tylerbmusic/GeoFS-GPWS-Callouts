@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         GeoFS GPWS callouts
 // @namespace    https://github.com/tylerbmusic/GeoFS-GPWS-Callouts
-// @version      1.3
+// @version      1.4
 // @description  Adds some GPWS callouts
-// @author       GGamerGGuy
+// @author       GGamerGGuy (some sounds from Bruh000-sad)
 // @match        https://www.geo-fs.com/geofs.php?v=*
 // @match        https://*.geo-fs.com/geofs.php*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=geo-fs.com
@@ -40,10 +40,14 @@ setTimeout((function() {
     window.masterA = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/masterAlarm.wav');
     window.bankAngle = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bank-angle.wav');
     window.overspeed = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/masterAlarm.wav');
+    window.sinkRate = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/sink-rate.mp3');
+    window.pullUp = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/pull-up.mp3');
     window.justPaused = false;
     window.masterA.loop = true;
     window.bankAngle.loop = true;
     window.overspeed.loop = true;
+    window.sinkRate.loop = true;
+    window.pullUp.loop = true;
     window.iminimums = false;
     window.i2500 = false;
     window.i2000 = false;
@@ -66,10 +70,35 @@ setTimeout((function() {
     window.DEGREES_TO_RAD = window.DEGREES_TO_RAD || 0.017453292519943295769236907684886127134428718885417254560971914401710091146034494436822415696345094822123044925073790592483854692275281012398474218934047117319168245015010769561697553581238605305168789;
     window.RAD_TO_DEGREES = window.RAD_TO_DEGREES || 57.295779513082320876798154814105170332405472466564321549160243861202847148321552632440968995851110944186223381632864893281448264601248315036068267863411942122526388097467267926307988702893110767938261;
     window.METERS_TO_FEET = window.METERS_TO_FEET || 3.280839895;
+    //Update notification
+    async function checkForUpdates() {
+        let NAME = "GPWS-Callouts";
+        let SPACEDNAME = "GPWS Callouts";
+        let LSNAME = "gpws";
+        let VERSION = "1.4";
+        let URL = "https://github.com/tylerbmusic/GeoFS-GPWS-Callouts";
+        let a = await fetch('https://tylerbmusic.github.io/versions.json?t=' + Date.now());
+        let b = await a.text();
+        let newversion = JSON.parse(b)[NAME];
+        if (localStorage.getItem(LSNAME + "U" + VERSION) !== "true") { //Send an event upon updating (update data not available to the public)
+            localStorage.setItem(LSNAME + "U" + VERSION, "true");
+            await fetch(`https://track.tylerbialowas-bard.workers.dev?event=${LSNAME}v${VERSION}`, {method: "HEAD"});
+        }
+        if (newversion !== VERSION && localStorage.getItem(LSNAME + "StopU" + newversion) !== "true") {
+            if (confirm(`A new update for ${SPACEDNAME} is available at ${URL}\nCurrent version: v${VERSION}; New version: v${newversion}\nPress "OK" open update URL in new tab, or "Cancel" to skip this update.`)) {
+                window.open(URL);
+                console.log("OPENING " + URL);
+            } else {
+                localStorage.setItem(LSNAME + "StopU" + newversion, true);
+            }
+        }
+    }
+    checkForUpdates();
+
     //ANONYMOUS TRACKING VIA CLOUDFLARE (I will never sell your data.)
     //What's being tracked: For each script, how many hits (page loads) it's had in the last 24 hours, how many total hits in the last 30 days, and how many unique users there are.
     //Why it's being tracked: I am curious to know how many people are using my addons.
-    //To see the data, go to https://track.tylerbialowas-bard.workers.dev in a web browser.
+    //To see the data, go to https://tylebmusic.github.io/stats in a web browser.
 
     async function track() {
         if (true) { //To opt out of anonymous tracking, change the word "true" in this line to "false".
@@ -134,9 +163,17 @@ setTimeout((function() {
     flightDataElement.innerHTML = `
                 <input style="background: 0 0; border: none; border-radius: 2px; color: #000; display: inline-block; padding: 0 8px;" placeholder="Minimums (Baro)" id="minimums">
             `;
+    function inPullUpRange(vs, a) { //vs=vertical speed, a=alt
+        let v = -vs;
+        return (v >= 1550 && v <= 10550) && (a >= 75 - 0.007*v) && ((v >= 6000 && a < v/3 + 500) || (v < 6000 && v >= 1650 && a < 0.5*v-500) || (v < 1650 && v >= 1550 && a < 1.25*v - 1737.5)); // https://en.wikipedia.org/wiki/Ground_proximity_warning_system#/media/File:FAA_excessive_sink_rate_graph.svg
+    }
+    function inSinkRateRange(vs, a) { //vs=vertical speed, a=alt
+        let v = -vs;
+        return (v >= 1250 && v < 10550) && ((v >= 6000 && a >= v/3 + 500) || (v < 6000 && v >= 1650 && a >= 0.5*v - 500) || (v < 1650 && v >= 1550 && a >= 1.25*v - 1737.5) || (v < 1550 && v >= 1250 && a >= 200)) && ((v >= 6000 && a <= 0.41*(v-6000) + 3200) || (v < 6000 && v >= 1250 && a <= (12/19)*(v - 1250) + 200)); // https://en.wikipedia.org/wiki/Ground_proximity_warning_system#/media/File:FAA_excessive_sink_rate_graph.svg
+    }
     function updateGPWS() {
         // Check if geofs.animation.values is available
-        if (typeof geofs.animation.values != 'undefined' && !geofs.isPaused()) {
+        if (typeof geofs.animation.values != 'undefined' && !geofs.isPaused() && audio.on && window.soundsOn) {
             if (window.justPaused) {
                 window.justPaused = false;
             }
@@ -167,9 +204,13 @@ setTimeout((function() {
                 window.masterA = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bmasterAlarm.wav');
                 window.bankAngle = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/obank-angle.wav');
                 window.overspeed = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/boverspeed.wav');
+                window.sinkRate = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bsink-rate.mp3');
+                window.pullUp = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bpull-up.mp3');
                 window.masterA.loop = true;
                 window.bankAngle.loop = true;
                 window.overspeed.loop = true;
+                window.sinkRate.loop = true;
+                window.pullUp.loop = true;
             } else if (window.willTheDoorFallOff && !window.didAWheelFall && !window.isAsOldAsYourMom) {
                 window.a2500 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/b2500.wav');
                 window.a2000 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/b2000.wav');
@@ -195,9 +236,13 @@ setTimeout((function() {
                 window.masterA = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bmasterAlarm.wav');
                 window.bankAngle = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bbank-angle.wav');
                 window.overspeed = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/boverspeed.wav');
+                window.sinkRate = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bsink-rate.mp3');
+                window.pullUp = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bpull-up.mp3');
                 window.masterA.loop = true;
                 window.bankAngle.loop = true;
                 window.overspeed.loop = true;
+                window.sinkRate.loop = true;
+                window.pullUp.loop = true;
             } else if (!window.willTheDoorFallOff && window.didAWheelFall) {
                 window.a2500 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/2500.wav');
                 window.a2000 = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/2000.wav');
@@ -223,9 +268,13 @@ setTimeout((function() {
                 window.masterA = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/masterAlarm.wav');
                 window.bankAngle = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bank-angle.wav');
                 window.overspeed = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/masterAlarm.wav');
+                window.sinkRate = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/sink-rate.mp3');
+                window.pullUp = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/pull-up.mp3');
                 window.masterA.loop = true;
                 window.bankAngle.loop = true;
                 window.overspeed.loop = true;
+                window.sinkRate.loop = true;
+                window.pullUp.loop = true;
             }
             // Retrieve and format the required values
             var minimum = ((document.getElementById("minimums") !== null) && document.getElementById("minimums").value !== undefined) ? Number(document.getElementById("minimums").value) : undefined;
@@ -274,6 +323,18 @@ setTimeout((function() {
                 }
                 if (!geofs.autopilot.on && window.wasAPOn) { //Autopilot Disconnect
                     window.apDisconnect.play();
+                }
+                if (!geofs.aircraft.instance.groundContact && inSinkRateRange(verticalSpeed, agl) && window.sinkRate.paused) {
+                    window.sinkRate.currentTime = 0;
+                    window.sinkRate.play();
+                } else if ((geofs.aircraft.instance.groundContact || !inSinkRateRange(verticalSpeed, agl)) && !window.sinkRate.paused) {
+                    window.sinkRate.pause();
+                }
+                if (!geofs.aircraft.instance.groundContact && inPullUpRange(verticalSpeed, agl) && window.pullUp.paused) {
+                    window.pullUp.currentTime = 0;
+                    window.pullUp.play();
+                } else if ((geofs.aircraft.instance.groundContact || !inPullUpRange(verticalSpeed, agl)) && !window.pullUp.paused) {
+                    window.pullUp.pause();
                 }
                 if (verticalSpeed <= 0) {
                     if (!geofs.aircraft.instance.groundContact && agl < 300 && geofs.animation.values.throttle > 0.95 && window.dontSink.paused) { //Don't Sink
@@ -396,7 +457,7 @@ setTimeout((function() {
                     window.gpwsRefreshRate = 100;
                 }
             }
-        } else if (geofs.isPaused() && !window.justPaused) {
+        } else if ((geofs.isPaused() || !audio.on || !window.soundsOn) && !window.justPaused) {
             window.a2500.pause();
             window.a2000.pause();
             window.a1000.pause();
@@ -422,6 +483,8 @@ setTimeout((function() {
             window.masterA.pause();
             window.bankAngle.pause();
             window.overspeed.pause();
+            window.sinkRate.pause();
+            window.pullUp.pause();
             window.justPaused = true;
         }
         window.wasAPOn = geofs.autopilot.on;
