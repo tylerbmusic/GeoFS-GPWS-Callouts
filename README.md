@@ -39,3 +39,6 @@ Here is a list of all of the current callouts and their links, pasted directly f
     window.dontSink = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/dont-sink.wav');  
     window.masterA = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/masterAlarm.wav');  
     window.bankAngle = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bank-angle.wav');  
+    window.overspeed = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/masterAlarm.wav');
+    window.sinkRate = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/sink-rate.mp3');
+    window.pullUp = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/pull-up.mp3');
