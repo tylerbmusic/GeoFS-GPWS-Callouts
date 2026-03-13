@@ -41,7 +41,7 @@ setTimeout((function() {
     window.bankAngle = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bank-angle.wav');
     window.overspeed = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/masterAlarm.wav');
     window.sinkRate = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/sink-rate.mp3');
-    window.pullUp = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/pull-up.mp3');
+    window.pullUp = new Audio('https://bruh0000-sad.github.io/Just-some-stall-sound/fullsizerender_LgnRpKo.mp3');
     window.justPaused = false;
     window.masterA.loop = true;
     window.bankAngle.loop = true;
@@ -205,7 +205,7 @@ setTimeout((function() {
                 window.bankAngle = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/obank-angle.wav');
                 window.overspeed = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/boverspeed.wav');
                 window.sinkRate = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bsink-rate.mp3');
-                window.pullUp = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bpull-up.mp3');
+                window.pullUp = new Audio('https://bruh0000-sad.github.io/Just-some-stall-sound/boeing-747-pull-up-400-f.mp3');
                 window.masterA.loop = true;
                 window.bankAngle.loop = true;
                 window.overspeed.loop = true;
@@ -237,7 +237,7 @@ setTimeout((function() {
                 window.bankAngle = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bbank-angle.wav');
                 window.overspeed = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/boverspeed.wav');
                 window.sinkRate = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bsink-rate.mp3');
-                window.pullUp = new Audio('https://tylerbmusic.github.io/GPWS-files_geofs/bpull-up.mp3');
+                window.pullUp = new Audio('https://bruh0000-sad.github.io/Just-some-stall-sound/Pull%20Up%20Boeing.mp3');
                 window.masterA.loop = true;
                 window.bankAngle.loop = true;
                 window.overspeed.loop = true;
